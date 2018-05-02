@@ -5,17 +5,21 @@ import 'package:redux/redux.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import './login.dart';
 import 'redux.dart';
-
+import './login.dart';
+import './materials.dart';
 
 
 void main() async {
-  // final store = new Store<AppState>(stateReducer, initialState: new AppState(""), middleware: [loggingMiddleware]);
+  // final store = Store<AppState>(stateReducer, initialState: AppState(""), middleware: [loggingMiddleware]);
   var state = await SharedPreferences.getInstance()
-  .then((sp) => sp.getString('state'))
+  .then((sp) { 
+    return sp.getString('state');
+    })
   .then(json.decode)
-  .then((m) => new AppState.loadFromJson(m))
+  .then((m) {
+    return new AppState.loadFromJson(m);
+  })
   .catchError(print);
 
   if (state != null)
@@ -53,7 +57,7 @@ class MyApp extends StatelessWidget {
         // counter didn't reset back to zero; the application is not restarted.
         primarySwatch: Colors.blue,
       ),
-      // home: new MyHomePage(title: 'Flutter Demo Home Page'),
+      // home: MyHomePage(title: 'Flutter Demo Home Page'),
       home: entry,
     );
   }
@@ -75,7 +79,7 @@ class MyHomePage extends StatefulWidget {
   final Store<AppState> store = reduxStore;
 
   @override
-  _MyHomePageState createState() => new _MyHomePageState();
+  _MyHomePageState createState() =>new _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
@@ -83,13 +87,12 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _incrementCounter() {
     setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
       _counter++;
     });
+  }
+
+  void _doNav() {
+    Navigator.push(context, new MaterialPageRoute(builder: (context) => new MaterialsPage()));
   }
 
   @override
@@ -106,7 +109,7 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ),
       floatingActionButton: new FloatingActionButton(
-        onPressed: _incrementCounter,
+        onPressed: _doNav,
         tooltip: 'Increment',
         child: new Icon(Icons.add),
       ),
